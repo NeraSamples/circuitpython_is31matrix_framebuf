@@ -9,17 +9,12 @@ import time
 import board
 from rainbowio import colorwheel
 from adafruit_is31fl3741.adafruit_rgbmatrixqt import Adafruit_RGBMatrixQT
-import adafruit_is31fl3741
+from adafruit_is31fl3741 import PREFER_BUFFER
 from is31matrixqt_framebuf import IS31FrameBuffer
 
 # i2c = board.I2C()
 i2c = board.STEMMA_I2C()
-
-is31 = Adafruit_RGBMatrixQT(i2c, allocate=adafruit_is31fl3741.PREFER_BUFFER)
-is31.set_led_scaling(0xFF)
-is31.global_current = 0xFF
-is31.enable = True
-
+is31 = Adafruit_RGBMatrixQT(i2c, allocate=PREFER_BUFFER)
 fbuff = IS31FrameBuffer(is31)
 
 def scroll(text, color):
@@ -28,5 +23,20 @@ def scroll(text, color):
         fbuff.text(text, -x, 1, color)
         is31.show()
 
+def scroll_bis(text, color):
+    for c in range(len(text)):
+        # first substring scrolls longer, others scroll by 1 char
+        if c == 0:
+            start = 13
+        else:
+            start = 0
+        end = -6
+        # print(c, chars, start, end)
+        for x in range(start, end, -1):
+            is31.fill(0)
+            fbuff.text(text[c:c+4], x, 1, color)
+            is31.show()
+
 while True:
     scroll("Hello world!", 0x00FF80)
+    scroll_bis("Hello world!", 0xFF0080)

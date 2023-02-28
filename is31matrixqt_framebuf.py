@@ -33,6 +33,9 @@ class IS31Buffer:
             self.is31[self.mapping[index]] = val
 
 def IS31FrameBuffer(is31):
+    is31.set_led_scaling(0xFF)
+    is31.global_current = 0xFF
+    is31.enable = True
     is31_buffer = IS31Buffer(is31, rgb_matrix_qt_mapping())
     return adafruit_framebuf.FrameBuffer(
         is31_buffer, 13, 9,
